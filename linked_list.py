@@ -2,16 +2,17 @@
 
 class SinglyLinkedList:
     class __Node:
-        def __init__(self, val):
+        def __init__(self, val=0):
             self.val = val
             self.next = None
 
     def __init__(self):
-        self.head = None
+        self.__head = None
+        self.__tail = None  # keep track of __tail to make it more efficient
 
     def __repr__(self):
         string = ''
-        current = self.head
+        current = self.__head
 
         while current.next:
             string += f"{current.val} -> "
@@ -19,36 +20,49 @@ class SinglyLinkedList:
         string += str(current.val)
         return string
 
+    def isEmpty(self):
+        return self.__head == None
+
     # O(1)
     def addFirst(self, val):
         n = SinglyLinkedList.__Node(val)
-        n.next = self.head
-        self.head = n
 
-    # O(n)
+        if self.isEmpty():
+            self.__head = self.__tail = n
+        else:
+            n.next = self.__head
+            self.__head = n
+
+    # O(1)
     def addLast(self, val):
-        current = self.head
-        while current.next:
-            current = current.next
-        current.next = SinglyLinkedList.__Node(val)
+        n = SinglyLinkedList.__Node(val)
+
+        if self.isEmpty():
+            self.__head = self.__tail = n
+        else:
+            self.__tail.next = n
+            self.__tail = n
 
     # O(1)
     def delFirst(self):
-        head = self.head
-        self.head = head.next
-        head = None
+        __head = self.__head
+        self.__head = __head.next
+        __head = None
 
     # O(n)
     def delLast(self):
-        current = self.head
+        current = self.__head
         while current.next.next:
             current = current.next
+
+        # second to last node
+        self.__tail = current
         current.next.val = None
         current.next = None
 
     # O(n)
     def contains(self, val):
-        current = self.head
+        current = self.__head
         while current:
             if (current.val == val):
                 return True
@@ -58,7 +72,7 @@ class SinglyLinkedList:
     # O(n)
     def indexOf(self, val):
         index = 0
-        current = self.head
+        current = self.__head
         while current:
             if (current.val == val):
                 return index
@@ -68,20 +82,11 @@ class SinglyLinkedList:
 
 
 s = SinglyLinkedList()
+s.addFirst(3)
 s.addFirst(2)
-s.addFirst(4)
-s.addFirst(6)
-s.addLast(10)
-s.addFirst(69)
+s.addFirst(1)
+s.addLast(69)
 s.addLast(100)
 s.addLast(101)
-s.addFirst(0)
-
-
-print('head', s.head)
-s.delFirst()
+s.addFirst(1)
 print(s)
-s.delLast()
-print(s)
-print('indexOf?', s.indexOf(69))
-print('indexOf?', s.indexOf(200))
