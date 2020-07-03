@@ -55,12 +55,10 @@ class SinglyLinkedList:
         # contains one node
         if self.__head == self.__tail:
             self.__head = self.__tail = None
-            self.__size -= 1
-            return
-
-        first = self.__head
-        self.__head = first.next
-        first.next = None
+        else:
+            first = self.__head
+            self.__head = first.next
+            first.next = None
 
         self.__size -= 1
 
@@ -72,22 +70,19 @@ class SinglyLinkedList:
         # contains one node
         if self.__head == self.__tail:
             self.__head = self.__tail = None
-            self.__size -= 1
-            return
+        else:
+            # get second to last node
+            current = self.__head
+            while current.next.next:
+                current = current.next
 
-        # get second to last node
-        current = self.__head
-        while current.next.next:
-            current = current.next
-
-        self.__tail = current
-        current.next.val = None
-        current.next = None
+            self.__tail = current
+            current.next.val = None
+            current.next = None
 
         self.__size -= 1
 
     # O(n)
-
     def contains(self, val):
         current = self.__head
         while current:
@@ -107,19 +102,61 @@ class SinglyLinkedList:
             current = current.next
         return -1
 
-    # O(n)
+    # O(1)
     def size(self):
         return self.__size
 
+    # O(n)
+    def toList(self):
+        # set init size to reduce having to recreate array
+        converted = [0] * self.__size
+        index = 0
+        current = self.__head
+
+        while current:
+            converted[index] = current.val
+            index += 1
+            current = current.next
+        return converted
+
+    # O(n)
+    def reverse(self):
+        if self.isEmpty():
+            raise Exception('No such element. Empty list.')
+
+        if self.__head == self.__tail:
+            return
+
+        # reverse the linked list in place
+        current = self.__head.next
+        prev = self.__head
+
+        # swap head and tail pointers
+        temp = self.__head
+        self.__head = self.__tail
+        self.__tail = temp
+        self.__tail.next = None
+
+        while current:
+            if not current.next:
+                current.next = prev
+                return
+
+            nxt = current.next
+            current.next = prev
+            prev = current
+            current = nxt
+
 
 s = SinglyLinkedList()
-s.addFirst(3)
-s.addFirst(2)
-print('size', s.size())
+# test zero items
+# test one item in list
+s.addLast(1)
+s.addLast(2)
+s.addLast(3)
+
 print(s)
-print('index of 3', s.indexOf(3))
-print('index of 2', s.indexOf(2))
-s.delLast()
-print('size', s.size())
-# s.delFirst()
-print(s)
+s.reverse()
+print('reversed', s)
+print('converted', s.toList())
+# test multiple items in list
