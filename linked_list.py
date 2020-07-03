@@ -124,28 +124,20 @@ class SinglyLinkedList:
         if self.isEmpty():
             raise Exception('No such element. Empty list.')
 
-        if self.__head == self.__tail:
-            return
-
         # reverse the linked list in place
         current = self.__head.next
         prev = self.__head
 
-        # swap head and tail pointers
-        temp = self.__head
-        self.__head = self.__tail
-        self.__tail = temp
-        self.__tail.next = None
-
         while current:
-            if not current.next:
-                current.next = prev
-                return
-
             nxt = current.next
             current.next = prev
             prev = current
             current = nxt
+
+        # swap head and tail pointers
+        self.__tail = self.__head
+        self.__tail.next = None
+        self.__head = prev
 
 
 s = SinglyLinkedList()
