@@ -139,16 +139,40 @@ class SinglyLinkedList:
         self.__tail.next = None
         self.__head = prev
 
+    # O(n)
+    def getKthFromEnd(self, k):
+        # k = 3
+        # two nodes have to be two (k - 1) nodes apart
+        #   [1, 2, 3, 4]
+        #    *              -count 0
+        #    *  *           -count 1
+        #    *     *        -count 2
+
+        if self.isEmpty():
+            raise Exception('Linked List is empty.')
+
+        if (k <= 0):
+            return self.__tail.val
+
+        count = 0
+        target = lead = self.__head
+
+        while lead:
+            lead = lead.next
+            if count > k - 1:
+                target = target.next
+            count += 1
+
+        return target.val
+
 
 s = SinglyLinkedList()
-# test zero items
-# test one item in list
 s.addLast(1)
 s.addLast(2)
-s.addLast(3)
+# s.addLast(3)
+# s.addLast(4)
+# s.addLast(5)
 
 print(s)
-s.reverse()
-print('reversed', s)
 print('converted', s.toList())
-# test multiple items in list
+print('target ? ', s.getKthFromEnd(0))
