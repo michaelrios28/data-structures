@@ -165,14 +165,27 @@ class SinglyLinkedList:
 
         return target.val
 
+    def getMiddleNode(self):
+        lead = middle = self.__head
+        while lead != self.__tail and lead.next != self.__tail:
+            lead = lead.next.next
+            middle = middle.next
+
+        if lead == self.__tail:
+            return middle.val
+        else:
+            return middle.val, middle.next.val
+
 
 s = SinglyLinkedList()
 s.addLast(1)
 s.addLast(2)
-# s.addLast(3)
-# s.addLast(4)
+s.addLast(3)
+s.addLast(4)
+s.addLast(5)
+s.addLast(3)
 # s.addLast(5)
 
 print(s)
 print('converted', s.toList())
-print('target ? ', s.getKthFromEnd(0))
+print('target ? ', s.getMiddleNode())
