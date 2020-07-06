@@ -1,4 +1,4 @@
-from ds.stack.stack import Stack
+from stack import Stack
 
 s = Stack()
 s.push(2)

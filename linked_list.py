@@ -180,9 +180,3 @@ class SinglyLinkedList:
             return middle.val
         else:
             return middle.val, middle.next.val
-
-
-s = SinglyLinkedList()
-
-
-print(s)
