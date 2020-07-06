@@ -35,6 +35,11 @@ class SinglyLinkedList:
 
         self.__size += 1
 
+    def getFirst(self):
+        if self.isEmpty():
+            raise Exception('Empty List.')
+        return self.__head.val
+
     # O(1)
     def addLast(self, val):
         n = SinglyLinkedList.__Node(val)
@@ -178,14 +183,6 @@ class SinglyLinkedList:
 
 
 s = SinglyLinkedList()
-s.addLast(1)
-s.addLast(2)
-s.addLast(3)
-s.addLast(4)
-s.addLast(5)
-s.addLast(3)
-# s.addLast(5)
+
 
 print(s)
-print('converted', s.toList())
-print('target ? ', s.getMiddleNode())
