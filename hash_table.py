@@ -5,6 +5,7 @@
 # Collisions are handled by chaining
 
 from collections import deque
+import hashlib
 
 
 class HashTable():
@@ -14,11 +15,21 @@ class HashTable():
         print(f"Hash Table initialized w/ size of {self.__size}")
 
     def __hash(self, key):
-        return hash(key) % self.__size
+        hashed_key_hex_string = hashlib.sha256(str(key).encode()).hexdigest()
+        hashed_key_int = int(hashed_key_hex_string, 16)
+        return hashed_key_int % self.__size
 
     def put(self, key, value):
         print("test hash", self.__hash(key))
-        self.array[self.__hash(key)].append(value)
+        index = self.__hash(key)
+        self.array[index].append(tuple([key, value]))
+
+    def get(self, key):
+        # get index
+        index = self.__hash(key)
+        for k, v in self.array[index]:
+            if k == key:
+                return v
 
 
 if __name__ == "__main__":
@@ -26,6 +37,11 @@ if __name__ == "__main__":
     ht = HashTable(size=5)
     print('array', ht.array)
     ht.put('a', 2)
+    ht.put('b', 4)
+    ht.put('c', 6)
+    ht.put('lastKey', 6)
+
+    print('get', ht.get('a'))
     print('array', ht.array)
 
     # find the first non-repeating character in:
