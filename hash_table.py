@@ -20,28 +20,58 @@ class HashTable():
         return hashed_key_int % self.__size
 
     def put(self, key, value):
-        print("test hash", self.__hash(key))
         index = self.__hash(key)
-        self.array[index].append(tuple([key, value]))
+        index_linked_list = self.array[index]
+
+        # check to see if key already exists
+        if len(index_linked_list):
+            # search through linked list
+            for node in index_linked_list:
+                if node[0] == key:
+                    node[1] = value
+        else:
+            # handle collisions w/ chaining
+            index_linked_list.append(list([key, value]))
 
     def get(self, key):
-        # get index
         index = self.__hash(key)
-        for k, v in self.array[index]:
+        index_linked_list = self.array[index]
+
+        for k, v in index_linked_list:
             if k == key:
                 return v
+
+        raise KeyError(key)  # key wasn't found
+
+    def remove(self, key):
+        index = self.__hash(key)
+        index_linked_list = self.array[index]
+
+        found = False
+        for node in index_linked_list:
+            if node[0] == key:
+                found = True
+                break
+        if found:
+            index_linked_list.remove(node)
+        else:
+            raise KeyError(key)  # key wasn't found
 
 
 if __name__ == "__main__":
 
     ht = HashTable(size=5)
     print('array', ht.array)
-    ht.put('a', 2)
     ht.put('b', 4)
-    ht.put('c', 6)
-    ht.put('lastKey', 6)
-
-    print('get', ht.get('a'))
+    print('array', ht.array)
+    print('get', ht.get('b'))
+    ht.put('b', 6)
+    ht.put('b', 7)
+    ht.put('a', 117)
+    ht.put(None, 117)
+    print('array', ht.array)
+    print('get', ht.get('b'))
+    print('remove b', ht.remove('c'))
     print('array', ht.array)
 
     # find the first non-repeating character in:
