@@ -11,7 +11,8 @@ import hashlib
 class HashTable():
     def __init__(self, *, size):
         self.__size = size
-        self.array = [deque() for _ in range(size)]
+        # self.array = [deque() for _ in range(size)]
+        self.array = [None] * size
         print(f"Hash Table initialized w/ size of {self.__size}")
 
     def __hash(self, key):
@@ -19,41 +20,49 @@ class HashTable():
         hashed_key_int = int(hashed_key_hex_string, 16)
         return hashed_key_int % self.__size
 
-    def put(self, key, value):
+    def __get_node(self, key):
         index = self.__hash(key)
-        index_linked_list = self.array[index]
+        bucket = self.array[index]
+        if bucket:
+            for node in bucket:
+                k = node[0]
+                if k == key:
+                    return node
 
-        # check to see if key already exists
-        if len(index_linked_list):
-            # search through linked list
-            for node in index_linked_list:
-                if node[0] == key:
-                    node[1] = value
-        else:
-            # handle collisions w/ chaining
-            index_linked_list.append(list([key, value]))
+        return None
+
+    def __get_bucket(self, key):
+        index = self.__hash(key)
+        return self.array[index]
+
+    def __get_or_create_bucket(self, key):
+        index = self.__hash(key)
+        bucket = self.array[index]
+        if not bucket:
+            self.array[index] = deque()
+        return self.array[index]
+
+    def put(self, key, value):
+        node = self.__get_node(key)
+        if node:
+            node[1] = value
+            return
+
+        bucket = self.__get_or_create_bucket(key)
+        bucket.append(list([key, value]))
 
     def get(self, key):
-        index = self.__hash(key)
-        index_linked_list = self.array[index]
-
-        for k, v in index_linked_list:
-            if k == key:
-                return v
-
-        raise KeyError(key)  # key wasn't found
+        node = self.__get_node(key)
+        if node:
+            value = node[1]
+            return value
+        else:
+            raise KeyError(key)  # key wasn't found
 
     def remove(self, key):
-        index = self.__hash(key)
-        index_linked_list = self.array[index]
-
-        found = False
-        for node in index_linked_list:
-            if node[0] == key:
-                found = True
-                break
-        if found:
-            index_linked_list.remove(node)
+        node = self.__get_node(key)
+        if node:
+            self.__get_bucket(key).remove(node)
         else:
             raise KeyError(key)  # key wasn't found
 
@@ -61,43 +70,20 @@ class HashTable():
 if __name__ == "__main__":
 
     ht = HashTable(size=5)
-    print('array', ht.array)
+    print('testing put method')
     ht.put('b', 4)
     print('array', ht.array)
-    print('get', ht.get('b'))
+
+    print('testing get method')
+    print('getting b ->', ht.get('b'))
+
+    print('testing put method overwrite')
     ht.put('b', 6)
-    ht.put('b', 7)
-    ht.put('a', 117)
-    ht.put(None, 117)
-    print('array', ht.array)
-    print('get', ht.get('b'))
-    print('remove b', ht.remove('c'))
     print('array', ht.array)
 
-    # find the first non-repeating character in:
-    # a green apple
+    print('testing remove method')
+    print('removing b', ht.remove('b'))
+    print('array', ht.array)
 
-    # approach
-    # iterate through the string O(n)
-    # store the chars(k) and occurances(v) in a dictionary
-    # iterate through the string (since no order) and find first char w/ 1 occurance
-
-    def getFirstNonRepeatingChar(strng):
-        char_dict = dict()
-        for char in strng:
-            if char_dict.get(char):
-                char_dict[char] += 1
-            else:
-                char_dict[char] = 1
-
-        for char in strng:
-            if char_dict.get(char) == 1:
-                return char
-
-    def getFirstRepeatingChar(strng):
-        char_set = set()
-        for char in strng:
-            if char in char_set:
-                return char
-            else:
-                char_set.add(char)
+    print('testing accessing non-existent key')
+    print('getting b ->', ht.get('c'))
