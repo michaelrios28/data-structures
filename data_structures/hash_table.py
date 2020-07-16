@@ -21,8 +21,7 @@ class HashTable():
         return hashed_key_int % self._size
 
     def _get_node(self, key):
-        index = self._hash(key)
-        bucket = self._array[index]
+        bucket = self._get_bucket(key)
         if bucket:
             for node in bucket:
                 k = node[0]
